@@ -1,6 +1,6 @@
 import 'package:flame/components.dart';
 import 'package:puzzle/components/tile.dart';
-import 'package:puzzle/puzzle/puzzle.dart';
+import 'package:puzzle/puzzle/logic.dart';
 
 class Direction {
   Vector2 position;
@@ -10,7 +10,7 @@ class Direction {
 }
 
 class MovingSystem extends Component {
-  final Puzzle puzzle;
+  final PuzzleLogic puzzle;
 
   MovingSystem({required this.puzzle}) : super();
 

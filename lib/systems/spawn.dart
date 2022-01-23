@@ -1,9 +1,9 @@
 import 'package:flame/components.dart';
 import 'package:puzzle/components/tile.dart';
-import 'package:puzzle/puzzle/puzzle.dart';
+import 'package:puzzle/puzzle/logic.dart';
 
 class SpawnSystem extends Component {
-  final Puzzle puzzle;
+  final PuzzleLogic puzzle;
 
   SpawnSystem({required this.puzzle}) : super();
 

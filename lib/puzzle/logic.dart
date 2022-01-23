@@ -1,7 +1,7 @@
-class Puzzle {
+class PuzzleLogic {
   final Function success;
 
-  Puzzle({required this.success});
+  PuzzleLogic({required this.success});
 
   List<int> items = [];
 
