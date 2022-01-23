@@ -1,40 +1,116 @@
-import 'package:flame/components.dart';
 import 'package:flame/game.dart';
+import 'package:flame/input.dart';
 import 'package:flutter/material.dart';
+import 'package:puzzle/puzzle/puzzle.dart';
+import 'package:puzzle/systems/input.dart';
+import 'package:puzzle/systems/moving.dart';
+import 'package:puzzle/systems/spawn.dart';
 
-class GameScreen extends StatelessWidget {
+class GameScreen extends StatefulWidget {
   const GameScreen({Key? key}) : super(key: key);
 
   @override
+  State<GameScreen> createState() => _GameScreenState();
+}
+
+class _GameScreenState extends State<GameScreen> {
+  late PuzzleGame puzzle;
+
+  @override
+  void initState() {
+    super.initState();
+    puzzle = PuzzleGame();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return GameWidget(
-      game: PuzzleGame(),
+    return Scaffold(
+      backgroundColor: Color(0xFF231D29),
+      body: Container(
+        alignment: Alignment.center,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Stack(
+              // fit: StackFit.expand,
+              children: [
+                Container(
+                  width: 200,
+                  height: 200,
+                  child: GameWidget(
+                    backgroundBuilder: (context) {
+                      return Container(color: Color(0xFF231D29));
+                    },
+                    game: puzzle,
+                    overlayBuilderMap: {
+                      'PauseMenu': (ctx, game) {
+                        return Center(
+                          child: Container(
+                            // alignment: Alignment.center,
+                            child: Text('Success!', style: TextStyle(color: Colors.white, fontSize: 24)),
+                          ),
+                        );
+                      },
+                    },
+                    // initialActiveOverlays: const ['PauseMenu'],
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
 
-class PuzzleGame extends FlameGame {
+class PuzzleGame extends FlameGame with PanDetector, TapDetector {
+  PuzzleGame() {
+    puzzle = Puzzle(success: () {
+      overlays.add('PauseMenu');
+    });
+  }
+
+  // systems
+  late final SpawnSystem spawn;
+  late final MovingSystem moving;
+  final input = InputSystem();
+
+  // main logic
+  late final puzzle;
+
   @override
   Future<void>? onLoad() async {
     await super.onLoad();
-    add(Robo());
-  }
-}
 
-class Robo extends SpriteComponent {
-  // creates a component that renders the crate.png sprite, with size 16 x 16
-  Robo() : super(size: Vector2.all(50));
+    spawn = SpawnSystem(puzzle: puzzle);
+    moving = MovingSystem(puzzle: puzzle);
 
-  Future<void> onLoad() async {
-    sprite = await Sprite.load('robo.jpeg');
-    anchor = Anchor.center;
+    // systems
+    await add(spawn);
+    await add(input);
+    await add(moving);
+
+    // init game
+    spawn.start();
+    spawn.spawn();
   }
 
   @override
-  void onGameResize(Vector2 gameSize) {
-    super.onGameResize(gameSize);
-    // We don't need to set the position in the constructor, we can set it directly here since it will
-    // be called once before the first time it is rendered.
-    position = gameSize / 2;
+  void onPanUpdate(DragUpdateInfo info) {
+    input.onMouseMove(info);
+  }
+
+  @override
+  bool onPanStart(DragStartInfo info) {
+    input.onPanStart(info);
+    return true;
+  }
+
+  @override
+  bool onPanEnd(DragEndInfo info) {
+    input.onPanEnd(info);
+    return true;
   }
 }

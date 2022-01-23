@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:puzzle/screens/draggable.dart';
 import 'package:puzzle/screens/game.dart';
-import 'package:puzzle/screens/slidable.dart';
 
 void main() {
   runApp(const App());
