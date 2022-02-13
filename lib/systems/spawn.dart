@@ -9,6 +9,7 @@ class SpawnSystem extends Component {
 
   @override
   Future<void>? onLoad() async {
+    parent?.children.register<TileComponent>();
     await super.onLoad();
   }
 
@@ -25,16 +26,22 @@ class SpawnSystem extends Component {
           continue;
         }
 
-        parent?.children.register<TileComponent>();
         var tile = TileComponent(value: puzzle.items[cnt])
-          ..x = j * 50
-          ..y = i * 50;
+          ..x = j * 52
+          ..y = i * 52;
 
         // components
         await parent?.add(tile);
 
         cnt++;
       }
+    }
+  }
+
+  void clear() {
+    var elements = parent!.children.query<TileComponent>();
+    for (var e in elements) {
+      e.removeFromParent();
     }
   }
 }

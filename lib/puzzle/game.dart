@@ -5,11 +5,17 @@ import 'package:puzzle/systems/input.dart';
 import 'package:puzzle/systems/moving.dart';
 import 'package:puzzle/systems/spawn.dart';
 
+const PauseMenu = 'PauseMenu';
+
 class PuzzleGame extends FlameGame with PanDetector, TapDetector {
-  PuzzleGame() {
-    puzzle = PuzzleLogic(success: () {
-      overlays.add('PauseMenu');
-    });
+  PuzzleGame(Function update) {
+    // overlays.add('MainMenu');
+    puzzle = PuzzleLogic(
+      success: () {
+        overlays.add(PauseMenu);
+      },
+      update: update,//@todo: state managment
+    );
   }
 
   // systems
@@ -18,7 +24,7 @@ class PuzzleGame extends FlameGame with PanDetector, TapDetector {
   final input = InputSystem();
 
   // main logic
-  late final puzzle;
+  late final PuzzleLogic puzzle;
 
   @override
   Future<void>? onLoad() async {
@@ -32,7 +38,12 @@ class PuzzleGame extends FlameGame with PanDetector, TapDetector {
     await add(input);
     await add(moving);
 
-    // init game
+    start();
+  }
+
+  void start() {
+    overlays.remove(PauseMenu);
+    spawn.clear();
     spawn.start();
     spawn.spawn();
   }

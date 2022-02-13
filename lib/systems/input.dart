@@ -36,6 +36,7 @@ class InputSystem extends Component {
           element.start = start!;
           element.velocity = velocity!;
           element.end = end!;
+          element.direction = direction(element.position, element.end!);
         }
       }
 
@@ -47,5 +48,23 @@ class InputSystem extends Component {
 
   bool tap(Vector2 pos, Vector2 tap) {
     return (tap.x > pos.x && tap.x < pos.x + 50 && tap.y > pos.y && tap.y < pos.y + 50);
+  }
+
+  Direction direction(Vector2 pos, Vector2 end) {
+    // top = index - 4
+    // bottom = index + 4;
+    // left = index - 1;
+    // right = index + 1;
+    if (end.y > pos.y && end.x > pos.x && end.x < (pos.x + 50)) {
+      return Direction(position: Vector2(0, 1), direction: 4);
+    } else if (end.x > pos.x && end.y > pos.y && end.y < (pos.y + 50)) {
+      return Direction(position: Vector2(1, 0), direction: 1);
+    } else if (end.y < pos.y && end.x > pos.x && end.x < (pos.x + 50)) {
+      return Direction(position: Vector2(0, -1), direction: -4);
+    } else if (end.x < pos.x && end.y > pos.y && end.y < (pos.y + 50)) {
+      return Direction(position: Vector2(-1, 0), direction: -1);
+    }
+
+    return Direction(position: Vector2(0, 0), direction: 0);
   }
 }

@@ -1,16 +1,14 @@
+import 'dart:math';
+
 import 'package:flame/components.dart';
 import 'package:puzzle/components/tile.dart';
 import 'package:puzzle/puzzle/logic.dart';
 
-class Direction {
-  Vector2 position;
-  int direction;
-
-  Direction({required this.position, required this.direction});
-}
-
 class MovingSystem extends Component {
   final PuzzleLogic puzzle;
+  final double speed = 100.0;
+
+  double _cnt = 0.001;
 
   MovingSystem({required this.puzzle}) : super();
 
@@ -18,51 +16,59 @@ class MovingSystem extends Component {
   void update(double dt) {
     super.update(dt);
 
-    var elements = parent!.children.query<TileComponent>();
-    for (var element in elements) {
-      if (element.start != null && element.velocity != null && element.end != null) {
-        // calculate direction
-        var d = direction(element.position, element.end!);
+    if (!puzzle.active) {
+      return;
+    }
 
+    var elements = parent!.children.query<TileComponent>();
+
+    for (var element in elements) {
+      if (element.direction != null) {
         // calculate from and to index
         var from = puzzle.items.indexOf(element.value);
-        var to = from + d.direction;
+        var to = from + element.direction!.direction;
 
         // check if we can move from current index to calculated
         if (!puzzle.can(to)) {
           return;
         }
 
-        // move item
-        element.position.add(d.position);
-        puzzle.move(from, to);
-        if (puzzle.check()) {
-          puzzle.finish();
+        var a = 0.15;
+        var w = 19.4;
+        var t =  _cnt / 52;
+
+        var s = -(pow(e, -t / a) * cos(t * w)) + 1;
+
+        // https://medium.com/flutter-community/creating-animation-curves-in-flutter-4a1f9313a662
+
+        var next = dt * s * speed;
+
+        print(next);
+
+        var dist = _cnt + next;
+        if (dist > 52) {
+          next = 52 - _cnt;
         }
 
-        // clean moving data
-        element.start = null;
-        element.velocity = null;
-        element.end = null;
+        // move item
+        element.position.add(element.direction!.position * next);
+
+        _cnt = _cnt + next;
+
+        // 52 - max move distance
+        // finish move
+        if (_cnt >= 52) {
+          // clean moving data
+          element.direction = null;
+          _cnt = 0.001;
+
+          // update game logic
+          puzzle.move(from, to);
+          if (puzzle.check()) {
+            puzzle.finish();
+          }
+        }
       }
     }
-  }
-
-  Direction direction(Vector2 pos, Vector2 end) {
-    // top = index - 4
-    // bottom = index + 4;
-    // left = index - 1;
-    // right = index + 1;
-    if (end.y > pos.y && end.x > pos.x && end.x < (pos.x + 50)) {
-      return Direction(position: Vector2(0, 50), direction: 4);
-    } else if (end.x > pos.x && end.y > pos.y && end.y < (pos.y + 50)) {
-      return Direction(position: Vector2(50, 0), direction: 1);
-    } else if (end.y < pos.y && end.x > pos.x && end.x < (pos.x + 50)) {
-      return Direction(position: Vector2(0, -50), direction: -4);
-    } else if (end.x < pos.x && end.y > pos.y && end.y < (pos.y + 50)) {
-      return Direction(position: Vector2(-50, 0), direction: -1);
-    }
-
-    return Direction(position: Vector2(0, 0), direction: 0);
   }
 }

@@ -1,17 +1,26 @@
 class PuzzleLogic {
   final Function success;
+  final Function update;
+  int counter = 0;
+  bool active = true;
 
-  PuzzleLogic({required this.success});
+  PuzzleLogic({required this.success, required this.update});
 
   List<int> items = [];
 
   start() {
+    active = true;
+    counter = 0;
+    items = [];
+
     for (var i = 0; i < 16; i++) {
       items.add(i + 1);
     }
     items[15] = 0;
 
     shuffle();
+
+    update();
   }
 
   shuffle() {
@@ -37,6 +46,9 @@ class PuzzleLogic {
     var val = items[from];
     items[to] = val;
     items[from] = 0;
+    counter++;
+
+    update();
   }
 
   check() {
@@ -51,6 +63,9 @@ class PuzzleLogic {
   }
 
   finish() {
+    active = false;
     success();
+
+    update();
   }
 }

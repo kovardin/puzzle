@@ -11,11 +11,16 @@ class GameScreen extends StatefulWidget {
 
 class _GameScreenState extends State<GameScreen> {
   late PuzzleGame puzzle;
+  int counter = 0;
 
   @override
   void initState() {
     super.initState();
-    puzzle = PuzzleGame();
+    puzzle = PuzzleGame(() {
+      setState(() {
+        counter = puzzle.puzzle.counter;
+      });
+    });
   }
 
   @override
@@ -28,6 +33,13 @@ class _GameScreenState extends State<GameScreen> {
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            Text("${counter}", style: TextStyle(color: Colors.white, fontSize: 24)),
+            GestureDetector(
+              onTap: () {
+                puzzle.start();
+              },
+              child: Text("restart", style: TextStyle(color: Colors.white, fontSize: 24)),
+            ),
             Stack(
               // fit: StackFit.expand,
               children: [
@@ -40,7 +52,7 @@ class _GameScreenState extends State<GameScreen> {
                     },
                     game: puzzle,
                     overlayBuilderMap: {
-                      'PauseMenu': (ctx, game) {
+                      PauseMenu: (ctx, game) {
                         return Center(
                           child: Container(
                             // alignment: Alignment.center,
