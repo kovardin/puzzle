@@ -28,25 +28,24 @@ class InputSystem extends Component {
   void update(double dt) {
     super.update(dt);
 
-    if (start != null && velocity != null && end != null) {
+    if (start != null && end != null) {
 
       var elements = parent!.children.query<TileComponent>();
       for (var element in elements) {
         if (tap(element.position, start!)) {
           element.start = start!;
-          element.velocity = velocity!;
           element.end = end!;
           element.direction = direction(element.position, element.end!);
         }
       }
 
       start = null;
-      velocity = null;
       end = null;
     }
   }
 
   bool tap(Vector2 pos, Vector2 tap) {
+    // return true;
     return (tap.x > pos.x && tap.x < pos.x + 50 && tap.y > pos.y && tap.y < pos.y + 50);
   }
 

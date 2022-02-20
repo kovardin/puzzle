@@ -23,6 +23,8 @@ class PuzzleLogic {
     update();
   }
 
+  // https://stackoverflow.com/questions/36593259/a-good-randomizer-for-puzzle-15
+  // https://stackoverflow.com/questions/67955041/finding-a-random-permutation-of-sequence-1-15-for-the-15-puzzle-in-c
   shuffle() {
     // items.shuffle();
 

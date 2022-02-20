@@ -33,13 +33,6 @@ class _GameScreenState extends State<GameScreen> {
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text("${counter}", style: TextStyle(color: Colors.white, fontSize: 24)),
-            GestureDetector(
-              onTap: () {
-                puzzle.start();
-              },
-              child: Text("restart", style: TextStyle(color: Colors.white, fontSize: 24)),
-            ),
             Stack(
               // fit: StackFit.expand,
               children: [
@@ -55,8 +48,18 @@ class _GameScreenState extends State<GameScreen> {
                       PauseMenu: (ctx, game) {
                         return Center(
                           child: Container(
-                            // alignment: Alignment.center,
-                            child: Text('Success!', style: TextStyle(color: Colors.white, fontSize: 24)),
+                            color: Colors.black38,
+                            width: 180,
+                            height: 50,
+                            alignment: Alignment.center,
+                            child: const Text(
+                              'SUCCESS!',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 24,
+                                fontFamily: 'Marediv',
+                              ),
+                            ),
                           ),
                         );
                       },
@@ -65,6 +68,38 @@ class _GameScreenState extends State<GameScreen> {
                   ),
                 ),
               ],
+            ),
+            const SizedBox(
+              height: 24,
+            ),
+            Container(
+              width: 52 * 4,
+              child: Row(
+                children: [
+                  GestureDetector(
+                    onTap: () {
+                      puzzle.start();
+                    },
+                    child: const Text(
+                      "restart",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 24,
+                        fontFamily: 'Marediv',
+                      ),
+                    ),
+                  ),
+                  const Spacer(),
+                  Text(
+                    "${counter}",
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 24,
+                      fontFamily: 'Marediv',
+                    ),
+                  ),
+                ],
+              ),
             ),
           ],
         ),

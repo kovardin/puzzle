@@ -55,8 +55,7 @@ class PuzzleGame extends FlameGame with PanDetector, TapDetector {
 
   @override
   bool onPanStart(DragStartInfo info) {
-    input.onPanStart(info);
-    return true;
+    return input.onPanStart(info);
   }
 
   @override
