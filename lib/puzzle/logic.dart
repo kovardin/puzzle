@@ -86,6 +86,8 @@ class PuzzleLogic {
       if (prev > next) {
         return false;
       }
+
+      prev = next;
     }
 
     return true;
