@@ -1,6 +1,11 @@
+import 'dart:math';
+
 class PuzzleLogic {
   final Function success;
   final Function update;
+  Random random = Random(DateTime
+      .now()
+      .millisecondsSinceEpoch);
   int counter = 0;
   bool active = true;
 
@@ -26,10 +31,35 @@ class PuzzleLogic {
   // https://stackoverflow.com/questions/36593259/a-good-randomizer-for-puzzle-15
   // https://stackoverflow.com/questions/67955041/finding-a-random-permutation-of-sequence-1-15-for-the-15-puzzle-in-c
   shuffle() {
-    // items.shuffle();
+    for (var i = 0; i < 300; i++) {
+      var hole = items.indexOf(0);
 
-    items[14] = 0;
-    items[15] = 15;
+      var top = hole - 4;
+      var bottom = hole + 4;
+      var left = hole - 1;
+      var right = hole + 1;
+
+      var swaps = <int>[];
+      if (can(top)) {
+        swaps.add(top);
+      }
+      if (can(bottom)) {
+        swaps.add(bottom);
+      }
+      if (hole % 4 != 0) {
+        swaps.add(left);
+      }
+      if (hole % 4 != 3) {
+        swaps.add(right);
+      }
+
+      if (swaps.length == 0) {
+        continue;
+      }
+      var swap = swaps[random.nextInt(swaps.length)];
+      move(hole, swap);
+    }
+    counter = 0;
   }
 
   bool can(int to) {
@@ -37,17 +67,14 @@ class PuzzleLogic {
       return false;
     }
 
-    if (items[to] > 0) {
-      return false;
-    }
-
     return true;
   }
 
   move(int from, int to) {
-    var val = items[from];
-    items[to] = val;
-    items[from] = 0;
+    var tval = items[to];
+    var fval = items[from];
+    items[to] = fval;
+    items[from] = tval;
     counter++;
 
     update();

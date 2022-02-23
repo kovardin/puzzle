@@ -29,7 +29,7 @@ class MovingSystem extends Component {
         var to = from + element.direction!.direction;
 
         // check if we can move from current index to calculated
-        if (!puzzle.can(to)) {
+        if (!puzzle.can(to) || puzzle.items[to] != 0) {
           return;
         }
 
